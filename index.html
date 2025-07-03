@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SARC Analytics Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            /* min-height: 100vh; */
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: #1e3a8a;
+            padding: 10px 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            transition: opacity 0.3s;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-top: 50px;
+            padding: 20px;
+        }
+
+        /* Login Page */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            /* height: 100vh; */
+            min-height: calc(100vh - 70px);
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 450px;
+            width: 100%;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .login-title {
+            color: #1e3a8a;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .login-subtitle {
+            color: #64748b;
+            margin-bottom: 40px;
+            font-size: 16px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            color: #374151;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .login-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #3b82f6, #1e40af);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+        }
+
+        .error-message {
+            color: #ef4444;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        /* Dashboard */
+        .dashboard {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .dashboard-title {
+            color: white;
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .dashboard-subtitle {
+            color: rgba(255,255,255,0.8);
+            font-size: 18px;
+        }
+
+        .user-welcome {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .user-welcome h3 {
+            color: white;
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .user-welcome p {
+            color: rgba(255,255,255,0.8);
+            font-size: 14px;
+        }
+
+        .reports-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .report-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            border: 1px solid rgba(255,255,255,0.2);
+            cursor: pointer;
+        }
+
+        .report-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .report-title {
+            color: #1e3a8a;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .report-description {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .report-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .report-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        /* Report Viewer */
+        .report-viewer {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 10px;
+            margin: 0px auto;
+            max-width: 99%;
+            height: calc(100vh - 85px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .back-btn {
+            background: #6b7280;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #4b5563;
+            transform: translateY(-1px);
+        }
+
+        .report-frame {
+            width: 100%;
+            height: calc(100% - 80px);
+            border: none;
+            border-radius: 10px;
+            background: white;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .login-card {
+                margin: 20px;
+                padding: 30px;
+            }
+            
+            .dashboard-title {
+                font-size: 32px;
+            }
+            
+            .reports-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="nav-container">
+            <div class="logo">SARC Analytics</div>
+            <nav>
+                <ul class="nav-links">
+                    <!-- <li><a href="#contact">Contact</a></li>
+                    <li><a href="#careers">Careers</a></li>
+                    <li><a href="#packages">Packages</a></li>
+                    <li><a href="#login">Login</a></li> -->
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Login Page -->
+        <div id="loginPage" class="login-container">
+            <div class="login-card">
+                <h1 class="login-title">Welcome Back</h1>
+                <p class="login-subtitle">Access Analytics dashboard</p>
+                
+                <form id="loginForm">
+                    <div class="input-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <button type="submit" class="login-btn">Access Dashboard</button>
+                    <div id="loginError" class="error-message hidden"></div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Dashboard -->
+        <div id="dashboard" class="dashboard hidden">
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">Analytics Platform</h1>
+                <p class="dashboard-subtitle">Empowering data-driven decisions with intelligent insights</p>
+            </div>
+            
+            <div class="user-welcome" id="userWelcome">
+                <h3 id="welcomeMessage">Welcome back!</h3>
+                <p id="userEmail"></p>
+            </div>
+            
+            <div class="reports-grid" id="reportsGrid">
+                <!-- Reports will be populated here -->
+            </div>
+        </div>
+
+        <!-- Report Viewer -->
+        <div id="reportViewer" class="report-viewer hidden">
+            <div class="report-header">
+                <h2 id="currentReportTitle">Report Dashboard</h2>
+                <button class="back-btn" onclick="showDashboard()">Back to Dashboard</button>
+            </div>
+            <iframe id="reportFrame" class="report-frame" src="about:blank"></iframe>
+        </div>
+    </main>
+
+    <script>
+        // =====================================================
+        // 🎯 CUSTOMER CONFIGURATION SECTION
+        // =====================================================
+        // Add your 15 customers here with their emails and Power BI report links
+        
+        const CUSTOMERS = {
+            // Customer 1
+            'sidique.naim@sarcmediq.com': {
+                name: 'Naim',
+                company: 'Sarc Mediq',
+                reports: [
+                    {
+                        title: 'Usage Analysis Dashoard',
+                        description: 'Comprehensive sales analytics and performance metrics',
+                        url: 'https://app.powerbi.com/reportEmbed?reportId=10883bad-e99e-4ade-8068-bd924a57e403&autoAuth=true&ctid=94b43004-3933-49d0-9005-c5f87761fdec'
+                    },
+                    {
+                        title: 'Support Dashboard',
+                        description: 'Detailed financial performance and trend analysis',
+                        url: 'https://app.powerbi.com/reportEmbed?reportId=78729c90-3eb7-4b3c-a7a6-f80991c00ade&autoAuth=true&ctid=94b43004-3933-49d0-9005-c5f87761fdec'
+                    }
+                ]
+            },
+            
+            // Customer 2
+            'abc.xyz@anycompany.com': {
+                name: 'ABC',
+                company: 'XYZ',
+                reports: [
+                    {
+                        title: 'Quick Sight Reports',
+                        description: 'Customer behavior and segmentation insights',
+                        url: 'https://app.powerbi.com/reportEmbed?reportId=6d615b2c-c730-4c9e-9aad-01ae47c09bc5&autoAuth=true&ctid=94b43004-3933-49d0-9005-c5f87761fdec'
+                    }
+                ]
+            },
+            
+            // Customer 3
+            'mike.johnson@company3.com': {
+                name: 'Mike Johnson',
+                company: 'Company 3',
+                reports: [
+                    {
+                        title: 'Operations Dashboard',
+                        description: 'Operational efficiency and performance tracking',
+                        url: 'https://app.powerbi.com/view?r=eyJrIjoiZGVmZ2hpai1rbG1uby1wcXJzdC11dnd4LXl6MTIzNGFiY2QiLCJ0IjoiYzQzYjRiODYtMGRjNC00MWMzLWI1M2YtZTYyZWY1NTFhNTQwIn0%3D'
+                    },
+                    {
+                        title: 'Inventory Management Report',
+                        description: 'Real-time inventory levels and optimization insights',
+                        url: 'https://app.powerbi.com/view?r=eyJrIjoiYWJjZGVmZ2gtaWprbC1tbm9wLXFyc3QtdXZ3eHl6MTIzNCIsInQiOiJjNDNiNGI4Ni0wZGM0LTQxYzMtYjUzZi1lNjJlZjU1MWE1NDAifQ%3D%3D'
+                    }
+                ]
+            },
+            
+            // Customer 4
+            'sarah.wilson@company4.com': {
+                name: 'Sarah Wilson',
+                company: 'Company 4',
+                reports: [
+                    {
+                        title: 'Marketing Analytics',
+                        description: 'Campaign performance and ROI analysis',
+                        url: 'https://app.powerbi.com/view?r=eyJrIjoiZGVmZ2hpai1rbG1uby1wcXJzdC11dnd4LXl6MTIzNGFiY2QiLCJ0IjoiYzQzYjRiODYtMGRjNC00MWMzLWI1M2YtZTYyZWY1NTFhNTQwIn0%3D'
+                    }
+                ]
+            },
+            
+            // Customer 5
+            'david.brown@company5.com': {
+                name: 'David Brown',
+                company: 'Company 5',
+                reports: [
+                    {
+                        title: 'HR Analytics Dashboard',
+                        description: 'Employee performance and satisfaction metrics',
+                        url: 'https://app.powerbi.com/view?r=eyJrIjoiYWJjZGVmZ2gtaWprbC1tbm9wLXFyc3QtdXZ3eHl6MTIzNCIsInQiOiJjNDNiNGI4Ni0wZGM0LTQxYzMtYjUzZi1lNjJlZjU1MWE1NDAifQ%3D%3D'
+                    }
+                ]
+            },
+            
+            // Customer 6 - ADD YOUR CUSTOMERS HERE
+            'customer6@email.com': {
+                name: 'Customer 6',
+                company: 'Company 6',
+                reports: [
+                    {
+                        title: 'Your Report Title',
+                        description: 'Your report description',
+                        url: 'YOUR_POWERBI_REPORT_URL_HERE'
+                    }
+                ]
+            },
+            
+            // Customer 7
+            'customer7@email.com': {
+                name: 'Customer 7',
+                company: 'Company 7',
+                reports: [
+                    {
+                        title: 'Your Report Title',
+                        description: 'Your report description',
+                        url: 'YOUR_POWERBI_REPORT_URL_HERE'
+                    }
+                ]
+            },
+            
+            // Customer 8
+            'customer8@email.com': {
+                name: 'Customer 8',
+                company: 'Company 8',
+                reports: [
+                    {
+                        title: 'Your Report Title',
+                        description: 'Your report description',
+                        url: 'YOUR_POWERBI_REPORT_URL_HERE'
+                    }
+                ]
+            },
+            
+            // Customer 9
+            'customer9@email.com': {
+                name: 'Customer 9',
+                company: 'Company 9',
+                reports: [
+                    {
+                        title: 'Your Report Title',
+                        description: 'Your report description',
+                        url: 'YOUR_POWERBI_REPORT_URL_HERE'
+                    }
+                ]
+            },
+            
+            // Customer 10
+            'customer10@email.com': {
+                name: 'Customer 10',
+                company: 'Company 10',
+                reports: [
+                    {
+                        title: 'Your Report Title',
+                        description: 'Your report description',
+                        url: 'YOUR_POWERBI_REPORT_URL_HERE'
+                    }
+                ]
+            },
+            
+            // Customer 11
+            'customer11@email.com': {
+                name: 'Customer 11',
+                company: 'Company 11',
+                reports: [
+                    {
+                        title: 'Your Report Title',
+                        description: 'Your report description',
+                        url: 'YOUR_POWERBI_REPORT_URL_HERE'
+                    }
+                ]
+            },
+            
+            // Customer 12
+            'customer12@email.com': {
+                name: 'Customer 12',
+                company: 'Company 12',
+                reports: [
+                    {
+                        title: 'Your Report Title',
+                        description: 'Your report description',
+                        url: 'YOUR_POWERBI_REPORT_URL_HERE'
+                    }
+                ]
+            },
+            
+            // Customer 13
+            'customer13@email.com': {
+                name: 'Customer 13',
+                company: 'Company 13',
+                reports: [
+                    {
+                        title: 'Your Report Title',
+                        description: 'Your report description',
+                        url: 'YOUR_POWERBI_REPORT_URL_HERE'
+                    }
+                ]
+            },
+            
+            // Customer 14
+            'customer14@email.com': {
+                name: 'Customer 14',
+                company: 'Company 14',
+                reports: [
+                    {
+                        title: 'Your Report Title',
+                        description: 'Your report description',
+                        url: 'YOUR_POWERBI_REPORT_URL_HERE'
+                    }
+                ]
+            },
+            
+            // Customer 15
+            'customer15@email.com': {
+                name: 'Customer 15',
+                company: 'Company 15',
+                reports: [
+                    {
+                        title: 'Your Report Title',
+                        description: 'Your report description',
+                        url: 'YOUR_POWERBI_REPORT_URL_HERE'
+                    }
+                ]
+            }
+        };
+        
+        // =====================================================
+        // 🔧 APPLICATION LOGIC (DO NOT MODIFY)
+        // =====================================================
+        
+        let currentUser = null;
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('SARC Analytics Portal Initialized');
+            console.log(`${Object.keys(CUSTOMERS).length} customers configured`);
+        });
+
+        // Show different pages
+        function showDashboard() {
+            hideAllPages();
+            document.getElementById('dashboard').classList.remove('hidden');
+            renderUserReports();
+        }
+
+        function showReportViewer(reportUrl, reportTitle) {
+            hideAllPages();
+            document.getElementById('reportViewer').classList.remove('hidden');
+            document.getElementById('currentReportTitle').textContent = reportTitle;
+            document.getElementById('reportFrame').src = reportUrl;
+        }
+
+        function hideAllPages() {
+            const pages = ['loginPage', 'dashboard', 'reportViewer'];
+            pages.forEach(pageId => {
+                document.getElementById(pageId).classList.add('hidden');
+            });
+        }
+
+        // User login
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value.trim().toLowerCase();
+            
+            // Check if customer exists
+            if (CUSTOMERS[email]) {
+                currentUser = CUSTOMERS[email];
+                currentUser.email = email;
+                showDashboard();
+                document.getElementById('loginError').classList.add('hidden');
+            } else {
+                document.getElementById('loginError').textContent = 'Email not found. Please contact admin for access.';
+                document.getElementById('loginError').classList.remove('hidden');
+            }
+        });
+
+        // Render user reports in dashboard
+        function renderUserReports() {
+            const reportsGrid = document.getElementById('reportsGrid');
+            const welcomeMessage = document.getElementById('welcomeMessage');
+            const userEmailElement = document.getElementById('userEmail');
+            
+            // Update welcome message
+            welcomeMessage.textContent = `Welcome back, ${currentUser.name}!`;
+            userEmailElement.textContent = `${currentUser.email} | ${currentUser.company}`;
+            
+            if (!currentUser || currentUser.reports.length === 0) {
+                reportsGrid.innerHTML = '<p style="color: white; text-align: center; padding: 40px; font-size: 18px;">No reports available for your account.</p>';
+                return;
+            }
+            
+            reportsGrid.innerHTML = currentUser.reports.map((report, index) => `
+                <div class="report-card" onclick="openReport('${report.url}', '${report.title}')">
+                    <h3 class="report-title">${report.title}</h3>
+                    <p class="report-description">${report.description}</p>
+                    <button class="report-btn">Open Report</button>
+                </div>
+            `).join('');
+        }
+
+        // Open report
+        function openReport(url, title) {
+            showReportViewer(url, title);
+        }
+
+        // Debug function to show all configured customers (for development)
+        function showCustomerList() {
+            console.log('Configured Customers:');
+            Object.keys(CUSTOMERS).forEach((email, index) => {
+                console.log(`${index + 1}. ${email} - ${CUSTOMERS[email].name} (${CUSTOMERS[email].company})`);
+            });
+        }
+
+        // Call debug function
+        showCustomerList();
+    </script>
+</body>
+</html>
